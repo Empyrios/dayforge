@@ -1,0 +1,12 @@
+export const KEY='duoquest:v1';
+export const empty=()=>({schema:1,profile:{firstName:'',partnerName:'',since:''},dates:[],memories:[],goals:[]});
+export const today=()=>{const d=new Date();return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-')};
+export const validDate=s=>typeof s==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(s)&&!Number.isNaN(Date.parse(s))&&new Date(s+'T00:00:00Z').toISOString().slice(0,10)===s;
+export const days=(a,b)=>validDate(a)&&validDate(b)?Math.round((Date.parse(b+'T00:00:00Z')-Date.parse(a+'T00:00:00Z'))/86400000):0;
+export function nextMilestone(s,t=today()){if(!validDate(s))return null;const [y,m,d]=s.split('-').map(Number);const [cy,cm]=t.split('-').map(Number);let i=Math.max(y*12+m-1,cy*12+cm-1);for(let n=0;n<3;n++,i++){const yy=Math.floor(i/12),mm=i%12+1,day=Math.min(d,new Date(Date.UTC(yy,mm,0)).getUTCDate()),date=[yy,String(mm).padStart(2,'0'),String(day).padStart(2,'0')].join('-');if(date>=t&&date>=s)return{date,daysAway:days(t,date)}}return null}
+const txt=(v,n)=>typeof v==='string'?v.trim().slice(0,n):'';
+function rows(a,k){if(!Array.isArray(a))return [];const ids=new Set();return a.slice(0,500).flatMap(v=>{if(!v||typeof v!=='object'||Array.isArray(v))return [];const id=txt(v.id,90),title=txt(v.title,100);if(!/^[a-zA-Z0-9_-]{1,90}$/.test(id)||!title||ids.has(id))return [];ids.add(id);if(k==='dates')return[{id,title,date:validDate(v.date)?v.date:'',location:txt(v.location,120),note:txt(v.note,1800),budget:Math.max(0,Math.min(100000,Number(v.budget)||0)),done:v.done===true}];if(k==='memories')return[{id,title,date:validDate(v.date)?v.date:'',note:txt(v.note,1800),emoji:['💜','✨','🥰','🌿','🎉','📸'].includes(v.emoji)?v.emoji:'💜'}];return[{id,title,category:txt(v.category,40)||'Together',done:v.done===true}]})}
+export function validate(x){if(!x||x.schema!==1||!x.profile||typeof x.profile!=='object')throw Error('Invalid or unsupported backup');return{schema:1,profile:{firstName:txt(x.profile.firstName,42),partnerName:txt(x.profile.partnerName,42),since:validDate(x.profile.since)?x.profile.since:''},dates:rows(x.dates,'dates'),memories:rows(x.memories,'memories'),goals:rows(x.goals,'goals')}}
+export function read(){try{return validate(JSON.parse(localStorage.getItem(KEY)))}catch{return empty()}}
+export function save(s){localStorage.setItem(KEY,JSON.stringify(validate(s)))}
+export const money=n=>new Intl.NumberFormat('en-GB',{style:'currency',currency:'GBP'}).format(n||0);
