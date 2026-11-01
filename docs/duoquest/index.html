@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#171225">
+  <meta name="description" content="A little space for your big adventure together. Dates, memories, dreams and milestones, all in one private place.">
+  <meta name="color-scheme" content="dark">
+  <title>DuoQuest | Your story, together</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/svg+xml" href="icon.svg">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="app-header">
+      <a class="brand" href="#home" aria-label="DuoQuest home"><span class="brand-mark" aria-hidden="true">✦</span><span>Duo<span class="brand-accent">Quest</span></span></a>
+      <span class="header-caption">YOUR LITTLE UNIVERSE <span aria-hidden="true">✧</span></span>
+      <button class="icon-button settings-shortcut" data-nav="settings" aria-label="Open settings">⚙</button>
+    </header>
+    <main id="main" tabindex="-1" aria-live="off"></main>
+    <nav class="bottom-nav" aria-label="Main navigation">
+      <button type="button" data-nav="home"><span aria-hidden="true">⌂</span><span>Home</span></button>
+      <button type="button" data-nav="dates"><span aria-hidden="true">♡</span><span>Dates</span></button>
+      <button type="button" data-nav="memories"><span aria-hidden="true">◈</span><span>Memories</span></button>
+      <button type="button" data-nav="goals"><span aria-hidden="true">✦</span><span>Dreams</span></button>
+      <button type="button" data-nav="settings"><span aria-hidden="true">⚙</span><span>Settings</span></button>
+    </nav>
+  </div>
+  <dialog id="editor" aria-label="Edit item"></dialog>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <input id="import-file" type="file" accept=".json,application/json" hidden>
+  <script type="module" src="app.mjs"></script>
+</body>
+</html>
